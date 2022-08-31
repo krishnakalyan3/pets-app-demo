@@ -1,0 +1,15 @@
+torch
+kaggle
+pandas
+numpy
+pytorch-lightning
+wandb
+ipywidgets
+torchvision
+timm
+jupyterlab
+rich
+matplotlib
+albumentations
+kaggle
+git+https://github.com/Lightning-AI/LAI-Jupyter-Component
