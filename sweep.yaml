@@ -1,0 +1,12 @@
+program: train.py
+method: bayes
+project: pets
+name: wnb-demo
+metric:
+  name: val_loss
+  goal: minimize
+parameters:
+  batch_size:
+    values: [32, 64, 128]
+  epochs:
+    values: [1, 5, 10]
