@@ -15,7 +15,7 @@ class RootFlow(L.LightningFlow):
     def configure_layout(self):
         tab1 = {"name": "JupyterLab", "content": self.jupyter_work}
         tab2 = {"name": "Report", "content": "https://wandb.ai/krishnakalyan/pets/reports/Doggies-Classification--VmlldzoyNTU4NDA2"}
-        tab2 = {"name": "Sweep", "content": "https://wandb.ai/krishnakalyan/pets/reports/Doggy-Sweep-Report--VmlldzoyNTY2Mjk3"}
-        return [tab1, tab2]
+        tab3 = {"name": "Sweep", "content": "https://wandb.ai/krishnakalyan/pets/reports/Doggy-Sweep-Report--VmlldzoyNTY2Mjk3"}
+        return [tab1, tab2, tab3]
 
 app = L.LightningApp(RootFlow())
