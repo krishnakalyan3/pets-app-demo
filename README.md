@@ -28,8 +28,9 @@ python -m lightning run app 03_serve_app.py --cloud --open-ui false --name strea
 ```
 
 ### Known Issues
-- [] W&B report within the iFrame can you be accessed if you are not signed in.
+- Please sign in to access your W&B report.
 
 ### TODO
 - [ ] Fix README
 - [ ] Add lable dictionary
+- [ ] Fix Streamlit Model serving
