@@ -52,7 +52,7 @@ def is_valid(files, target_dict, split_pct = .2):
     return train_idx, val_idx
 
 aug = A.Compose([
-            A.Resize(512, 512),
+            A.Resize(225, 225),
             A.HorizontalFlip(0.5),
             A.VerticalFlip(),
             A.RandomRotate90(),
@@ -99,7 +99,6 @@ class PetsDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         (self.train_idx, self.val_idx) = index
         self.dset = dset
-        self.transforms = T.Compose([T.Resize((512, 512)), T.ToTensor(), T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 
     def train_dataloader(self):
         train_dset = Subset(dset, self.train_idx)

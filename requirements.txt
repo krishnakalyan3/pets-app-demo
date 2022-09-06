@@ -13,3 +13,5 @@ matplotlib
 albumentations
 kaggle
 git+https://github.com/Lightning-AI/LAI-Jupyter-Component
+streamlit
+pillow

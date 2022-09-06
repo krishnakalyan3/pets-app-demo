@@ -1,16 +1,8 @@
 #!/usr/bin/env python3
 
-import streamlit as st
 import lightning as L
 from lightning_app.frontend.stream_lit import StreamlitFrontend
-from PIL import Image
-from component.streamlit_component import streamlit_app
-import pytorch_lightning as pl
-import torch.nn as nn
-from torchvision import transforms as T
-import timm
-import wandb
-
+from components.streamlit_app import streamlit_app
 
 
 class LitStreamlit(L.LightningFlow):
