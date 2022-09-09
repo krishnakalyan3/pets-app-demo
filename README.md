@@ -27,12 +27,9 @@ lightning run app 02_sweep_app.py --env WANDB_API_KEY=$WANDB_API_KEY \
 
 # Streamlit Application
 python -m lightning run app 03_serve_app.py --open-ui false --name streamlit-app \
---env WANDB_API_KEY=$WANDB_API_KEY --cloud \
+--env WANDB_API_KEY=$WANDB_API_KEY  \
 --open-ui false --name wnb-serve
 ```
-
 ### Known Issues
 - Please sign in to access your W&B report.
 
-### TODO
-- [ ] Improve README
