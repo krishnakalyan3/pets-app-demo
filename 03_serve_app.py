@@ -2,7 +2,7 @@
 
 import lightning as L
 from lightning_app.frontend.stream_lit import StreamlitFrontend
-from components.streamlit_app import streamlit_app
+from components.st_app import streamlit_app
 
 
 class LitStreamlit(L.LightningFlow):
