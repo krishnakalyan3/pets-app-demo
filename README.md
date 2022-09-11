@@ -1,5 +1,6 @@
 ### Introduction
-Lightning App is composed of Lightning Work and Lightning Flow. Start by wrapping existing scripts as Lightning Works. Lightning Works send state information to Lighting Flows. Lightning Flows send run command to Lightning Works. Distributed states and runs are serialized via event loops in Lightning Flows.
+Lightning App is composed of Lightning Work and Lightning Flow. Diagram to illustreate this below.
+Also please feel free to check out [lightning-hpo](https://github.com/Lightning-AI/lightning-hpo) component.
 
 ### Creating your environment
 This is a demo lightning app that gradually shows us how to build lightning applications step by step. Make sure that you execute the commands below.
