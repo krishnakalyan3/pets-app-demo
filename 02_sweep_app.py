@@ -32,4 +32,5 @@ class RootFlow(L.LightningFlow):
             self.jupyter_works[work_name] = SweepWork(sweep_args, cloud_compute=L.CloudCompute(os.getenv("LIGHTNING_JUPYTER_LAB_COMPUTE", "gpu"), shm_size=4096))
             self.jupyter_works[work_name].run()
 
+
 app = L.LightningApp(RootFlow())

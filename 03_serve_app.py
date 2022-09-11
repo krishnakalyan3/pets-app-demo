@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import lightning as L
-from components.gradio import ImageServeGradio
+from components.gradio_app import ImageServeGradio
 
 class RootFlow(L.LightningFlow):
     def __init__(self) -> None:

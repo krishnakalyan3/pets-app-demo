@@ -1,6 +1,8 @@
+### Introduction
+Lightning App is composed of Lightning Work and Lightning Flow. Start by wrapping existing scripts as Lightning Works. Lightning Works send state information to Lighting Flows. Lightning Flows send run command to Lightning Works. Distributed states and runs are serialized via event loops in Lightning Flows.
 
 ### Creating your environment
-Make sure you have `conda` available. Follow the steps below to
+This is a demo lightning app that gradually shows us how to build lightning applications step by step. Make sure that you execute the commands below.
 
 ```
 conda create -n wnb python=3.9 
@@ -28,7 +30,7 @@ lightning run app 02_sweep_app.py --env WANDB_API_KEY=$WANDB_API_KEY \
 # Streamlit Application
 python -m lightning run app 03_serve_app.py --open-ui false --name streamlit-app \
 --env WANDB_API_KEY=$WANDB_API_KEY  \
---open-ui false --name wnb-serve
+--cloud --open-ui false --name wnb-serve
 ```
 ### Known Issues
 - Please sign in to access your W&B report.
