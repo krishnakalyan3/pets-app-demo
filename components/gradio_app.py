@@ -7,7 +7,8 @@ import os
 from components.target import inverse_lbl
 from components.pl_model import ImageClassifier
 
-
+PROJECT = "pets"
+ARTIFACT_METADATA = 'krishnakalyan/pets/model-19uabgdr:v16'
 class ImageServeGradio(ServeGradio):
     inputs = gr.inputs.Image(type="pil", shape=(224, 224))
     outputs = gr.outputs.Label(num_top_classes=120)
@@ -31,8 +32,6 @@ class ImageServeGradio(ServeGradio):
         return self._labels[prediction]
 
     def build_model(self):
-        PROJECT = "pets"
-        ARTIFACT_METADATA = 'krishnakalyan/pets/model-19uabgdr:v16'
         run = wandb.init(project=PROJECT)
         artifact = run.use_artifact(ARTIFACT_METADATA, type='model')
         artifact_dir = artifact.download()

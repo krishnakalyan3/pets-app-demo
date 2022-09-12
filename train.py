@@ -129,11 +129,8 @@ class LitClassifier(pl.LightningModule):
     def __init__(self, learning_rate):
         super().__init__()
         self.criterion = nn.CrossEntropyLoss()
-        self.train_metrics = MetricCollection({"train_acc": Accuracy(num_classes=classes, average="micro", multiclass=True),
-                                               "train_f1": F1Score(num_classes=classes, average="macro", multiclass=True)})
-        self.val_metrics = MetricCollection({"val_acc": Accuracy(num_classes=classes, average="micro", multiclass=True),
-                                             "val_f1": F1Score(num_classes=classes, average="macro", multiclass=True)
-                                            })
+        self.metrics = MetricCollection({"acc": Accuracy(num_classes=classes, average="micro", multiclass=True),
+                                               "f1": F1Score(num_classes=classes, average="macro", multiclass=True)})
         
         self.learning_rate = learning_rate
         self.model = LitModel()
@@ -149,10 +146,11 @@ class LitClassifier(pl.LightningModule):
         y_hat = self.model(x)
 
         loss = self.criterion(y_hat, y)
+        self.metrics(y_hat, y)
 
         logs = {'train_loss': loss, 
-                'train_accuracy': self.train_metrics["train_acc"], 
-                "train_f1": self.train_metrics["train_f1"]}
+                'train_accuracy': self.metrics["acc"], 
+                "train_f1": self.metrics["f1"]}
         wandb.log(logs)
         self.log_dict(
             logs,
@@ -166,10 +164,11 @@ class LitClassifier(pl.LightningModule):
         y = batch['target']
         y_hat = self.model(x)        
         loss = self.criterion(y_hat, y)
+        self.metrics(y_hat, y)
 
         logs = {'val_loss': loss, 
-                'val_accuracy': self.val_metrics["val_acc"], 
-                "val_f1": self.val_metrics["val_f1"]}
+                'val_accuracy': self.metrics["acc"], 
+                "val_f1": self.metrics["f1"]}
         wandb.log(logs)
         self.log_dict(
             logs,

@@ -1,6 +1,6 @@
 ### Introduction
 Lightning App is composed of Lightning Work and Lightning Flow. Diagram to illustreate this below.
-Also please feel free to check out [lightning-hpo](https://github.com/Lightning-AI/lightning-hpo) component.
+Also please feel free to check out a related [lightning-hpo](https://github.com/Lightning-AI/lightning-hpo) component.
 
 ### Creating your environment
 This is a demo lightning app that gradually shows us how to build lightning applications step by step. Make sure that you execute the commands below.
@@ -15,7 +15,9 @@ pip install -r requirements.txt
 ```
 
 ### Execution on Cloud
-This is a demo lightning app that gradually shows us how to build a lightning application step by step. Serial execution is adviced as complexity varies.
+This is a demo lightning app that gradually shows us how to build a lightning application step by step. Serial execution is adviced as complexity varies. After running the `training-app` please copy the sweep ID (which begins like `wandb agent krishnakalyan/pets/3xhnzyb4`) and replace it in the sweep application (`02_sweep_app.py`). You can modify the sweep application have more GPUs for your sweep experiment as well as number of sweeps.
+
+The last example `03_serve_app.py` shows us a way to serve this application using `gradio`. 
 
 ```
 # Jupyter Application

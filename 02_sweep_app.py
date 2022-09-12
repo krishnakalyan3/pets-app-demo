@@ -6,7 +6,7 @@ from typing import Optional
 import os
 
 
-AGENT_NAME = "krishnakalyan/pets/8ak6vdwd"
+AGENT_NAME = "krishnakalyan/pets/3xhnzyb4"
 NUM_SWEEPS = 3
 NUM_GPU = 2
 
