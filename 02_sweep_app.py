@@ -17,20 +17,22 @@ class SweepWork(L.LightningWork):
 
     def run(self):
         os.system(f"kaggle datasets download jessicali9530/stanford-dogs-dataset -p . --unzip")
+        os.system("git config --global --add safe.directory '*'")
         os.system(self.sweep_args)
-
 
 class RootFlow(L.LightningFlow):
     def __init__(self) -> None:
         super().__init__()
         self.jupyter_works = Dict()
+        self.current_workers = []
 
     def run(self):
-        for i in range(NUM_GPU):
-            work_name = f"sweep-run-{i}"
-            sweep_args = f"wandb agent --count {NUM_SWEEPS} {AGENT_NAME}"
-            self.jupyter_works[work_name] = SweepWork(sweep_args, cloud_compute=L.CloudCompute(os.getenv("LIGHTNING_JUPYTER_LAB_COMPUTE", "gpu"), shm_size=4096))
-            self.jupyter_works[work_name].run()
-
+        if len(self.current_workers) != NUM_GPU:
+            for i in range(NUM_GPU):
+                work_name = f"sweep-run-{i}"
+                sweep_args = f"wandb agent --count {NUM_SWEEPS} {AGENT_NAME}"
+                self.jupyter_works[work_name] = SweepWork(sweep_args, cloud_compute=L.CloudCompute(os.getenv("LIGHTNING_JUPYTER_LAB_COMPUTE", "gpu"), shm_size=4096))
+                self.current_workers.append(work_name)
+                self.jupyter_works[work_name].run()
 
 app = L.LightningApp(RootFlow())

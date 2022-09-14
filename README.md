@@ -20,8 +20,13 @@ This is a demo lightning app that gradually shows us how to build a lightning ap
 The last example `03_serve_app.py` shows us a way to serve this application using `gradio`. 
 
 ```
+# Create Secrets (TODO)
+WANDB_API_KEY
+KAGGLE_USERNAME
+KAGGLE_KEY
+
 # Jupyter Application
-lightning run app 01_jupyter_app.py --env WANDB_API_KEY=$WANDB_API_KEY \
+lightning run app 01_jupyter_app.py --env =$WANDB_API_KEY \
 --env KAGGLE_USERNAME=$KAGGLE_USERNAME --env KAGGLE_KEY=$KAGGLE_KEY \
 --cloud --open-ui false --name training-app
 
