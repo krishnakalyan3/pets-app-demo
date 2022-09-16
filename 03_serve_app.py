@@ -1,24 +1,19 @@
 #!/usr/bin/env python3
 
 import lightning as L
-from lightning_app.frontend.stream_lit import StreamlitFrontend
-from components.streamlit_app import streamlit_app
-
-
-class LitStreamlit(L.LightningFlow):
-    def configure_layout(self):
-        return StreamlitFrontend(render_fn=streamlit_app)
+from components.gradio_app import ImageServeGradio
 
 class RootFlow(L.LightningFlow):
     def __init__(self) -> None:
         super().__init__()
-        self.lit_streamlit = LitStreamlit()
+        self.gradio_work = ImageServeGradio(L.CloudCompute("cpu"))
 
     def run(self):
-        self.lit_streamlit.run()
+        self.gradio_work.run()
 
     def configure_layout(self):
-        tab1 = {"name": "Streamlit", "content": self.lit_streamlit}
-        return [tab1]
+        tab = {"name": "Grado EDA", "content": self.gradio_work}
+        
+        return [tab]
 
 app = L.LightningApp(RootFlow())

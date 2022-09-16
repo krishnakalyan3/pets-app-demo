@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 import pytorch_lightning as pl
-from pytorch_lightning import Trainer, seed_everything
-from pytorch_lightning.loggers import WandbLogger
-from pytorch_lightning.callbacks import ModelCheckpoint
 from torchmetrics import Accuracy, F1Score, MetricCollection
 from pytorch_lightning.callbacks import RichProgressBar
 from torch.utils.data import Dataset, DataLoader
@@ -20,14 +17,15 @@ import timm
 import wandb
 import numpy as np
 from datetime import datetime
-current_time = datetime.now().strftime("%D %H:%M:%S"); current_time
 
+
+current_time = datetime.now().strftime("%D %H:%M:%S"); current_time
 wandb.init(project="pets")
 config = wandb.config
 print(config)
 
 def is_valid(files, target_dict, split_pct = .2):
-    split_class = {j:0 for j in dset.target_dict}
+    split_class = {j:0 for j in target_dict}
     train_idx = []
     val_idx = []
     
@@ -38,7 +36,7 @@ def is_valid(files, target_dict, split_pct = .2):
     
     # Calculate percentage
     for i in split_class:
-        split_class[i] = int(split_class[i]*.2)
+        split_class[i] = int(split_class[i]*split_pct)
     
     for idx, i in enumerate(files):
         class_name = i.parent.name
@@ -89,7 +87,6 @@ ROOT = Path("images/Images/")
 dset = Pets(data_dir=ROOT, transforms=aug)
 classes = len(dset.target_dict)
 class_names = list(dset.target_dict.keys())
-
 index = is_valid(dset.files, dset.target_dict)
 
 class PetsDataModule(pl.LightningDataModule):
@@ -107,8 +104,6 @@ class PetsDataModule(pl.LightningDataModule):
     def val_dataloader(self):
         val_dset = Subset(dset, self.val_idx)
         return DataLoader(val_dset, batch_size=self.batch_size, num_workers=4)
-    
-pets = PetsDataModule(ROOT, config.batch_size, index, dset)
 
 class LitModel(nn.Module):
     def __init__(self, model_name='tf_efficientnet_b0_ns', num_classes=classes, pretrained=True):
@@ -129,7 +124,6 @@ class LitModel(nn.Module):
     def forward(self, x):
         return self.model(x)
     
-
     
 class LitClassifier(pl.LightningModule):
     def __init__(self, learning_rate):
@@ -139,7 +133,6 @@ class LitClassifier(pl.LightningModule):
                                     F1Score(num_classes=classes, average="macro", multiclass=True)])
         self.train_metrics = metrics.clone(prefix='train_')
         self.val_metrics = metrics.clone(prefix='val_')
-        
         self.learning_rate = learning_rate
         self.model = LitModel()
         self.save_hyperparameters()
@@ -154,10 +147,19 @@ class LitClassifier(pl.LightningModule):
         y_hat = self.model(x)
 
         loss = self.criterion(y_hat, y)
+<<<<<<< HEAD
         output = self.train_metrics(y_hat, y)
         
         logs = {'train_loss': loss, 'train_metrics': output}
 
+=======
+        self.metrics(y_hat, y)
+
+        logs = {'train_loss': loss, 
+                'train_accuracy': self.metrics["acc"], 
+                "train_f1": self.metrics["f1"]}
+        wandb.log(logs)
+>>>>>>> 08032264606ec5c6a6aa03a374636f9476052342
         self.log_dict(
             logs,
             on_step=False, on_epoch=True, prog_bar=True, logger=True
@@ -171,10 +173,19 @@ class LitClassifier(pl.LightningModule):
         y_hat = self.model(x)
 
         loss = self.criterion(y_hat, y)
+<<<<<<< HEAD
         output = self.val_metrics(y_hat, y)
 
         logs = {'val_loss': loss, 'val_metrics': output}
         
+=======
+        self.metrics(y_hat, y)
+
+        logs = {'val_loss': loss, 
+                'val_accuracy': self.metrics["acc"], 
+                "val_f1": self.metrics["f1"]}
+        wandb.log(logs)
+>>>>>>> 08032264606ec5c6a6aa03a374636f9476052342
         self.log_dict(
             logs,
             on_step=False, on_epoch=True, prog_bar=True, logger=True
@@ -184,10 +195,17 @@ class LitClassifier(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=(self.learning_rate))
         scheduler = ReduceLROnPlateau(optimizer, 'min', patience = 3)
+<<<<<<< HEAD
         return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "monitor": "val_loss"}}
     
+=======
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "monitor": "val_f1"}}
+
+
+>>>>>>> 08032264606ec5c6a6aa03a374636f9476052342
 def main():
     model = LitClassifier(learning_rate=0.001)
+    pets = PetsDataModule(ROOT, config.batch_size, index, dset)
     trainer = pl.Trainer(max_epochs=config.epochs, 
                      accelerator='auto',
                      devices=1, 
@@ -195,5 +213,5 @@ def main():
                      enable_progress_bar=True,
                      callbacks=[RichProgressBar()])
     trainer.fit(model, pets)
-    
+
 main()
