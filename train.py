@@ -135,11 +135,10 @@ class LitClassifier(pl.LightningModule):
     def __init__(self, learning_rate):
         super().__init__()
         self.criterion = nn.CrossEntropyLoss()
-        self.train_metrics = MetricCollection({"train_acc": Accuracy(num_classes=classes, average="micro", multiclass=True),
-                                               "train_f1": F1Score(num_classes=classes, average="macro", multiclass=True)})
-        self.val_metrics = MetricCollection({"val_acc": Accuracy(num_classes=classes, average="micro", multiclass=True),
-                                             "val_f1": F1Score(num_classes=classes, average="macro", multiclass=True)
-                                            })
+        metrics = MetricCollection([Accuracy(num_classes=classes, average="micro", multiclass=True), 
+                                    F1Score(num_classes=classes, average="macro", multiclass=True)])
+        self.train_metrics = metrics.clone(prefix='train_')
+        self.val_metrics = metrics.clone(prefix='val_')
         
         self.learning_rate = learning_rate
         self.model = LitModel()
@@ -155,11 +154,10 @@ class LitClassifier(pl.LightningModule):
         y_hat = self.model(x)
 
         loss = self.criterion(y_hat, y)
+        output = self.train_metrics(y_hat, y)
+        
+        logs = {'train_loss': loss, 'train_metrics': output}
 
-        logs = {'train_loss': loss, 
-                'train_accuracy': self.train_metrics["train_acc"], 
-                "train_f1": self.train_metrics["train_f1"]}
-        wandb.log(logs)
         self.log_dict(
             logs,
             on_step=False, on_epoch=True, prog_bar=True, logger=True
@@ -170,13 +168,13 @@ class LitClassifier(pl.LightningModule):
         x, y = batch
         x = batch['image']
         y = batch['target']
-        y_hat = self.model(x)        
-        loss = self.criterion(y_hat, y)
+        y_hat = self.model(x)
 
-        logs = {'val_loss': loss, 
-                'val_accuracy': self.val_metrics["val_acc"], 
-                "val_f1": self.val_metrics["val_f1"]}
-        wandb.log(logs)
+        loss = self.criterion(y_hat, y)
+        output = self.val_metrics(y_hat, y)
+
+        logs = {'val_loss': loss, 'val_metrics': output}
+        
         self.log_dict(
             logs,
             on_step=False, on_epoch=True, prog_bar=True, logger=True
@@ -186,7 +184,7 @@ class LitClassifier(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=(self.learning_rate))
         scheduler = ReduceLROnPlateau(optimizer, 'min', patience = 3)
-        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "monitor": "val_f1"}}
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "monitor": "val_loss"}}
     
 def main():
     model = LitClassifier(learning_rate=0.001)
